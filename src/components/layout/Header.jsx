@@ -4,7 +4,7 @@ function Header() {
         return (
                 <header className="dashboard-header">
                         <div className="header-title">
-                                <h1>URBAN TRAFFIC INTELLIGENCE</h1>
+                                <h1>NayanDristhi</h1>
                                 <p>AI-Powered Public Transport Traffic Monitoring</p>
                         </div>
 

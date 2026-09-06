@@ -13,7 +13,7 @@ function Sidebar() {
                                 <div className="logo-mark">
                                         <Map size={22} />
                                 </div>
-                                <span>UTI</span>
+                                <span>ND</span>
                         </div>
 
                         <nav className="sidebar-nav">

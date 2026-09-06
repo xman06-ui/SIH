@@ -7,82 +7,84 @@ import TrafficScoreChart from "./TrafficScoreChart";
 
 import TrafficMap from "../map/TrafficMap";
 
-import mockTrafficData from "../../data/mockTrafficData";
 import TrafficAnalytics from "./TrafficAnalytics";
-import TrafficAlerts from "./TrafficAlerts";
+
+import { useTrafficData } from "../../hooks/useTrafficData";
 
 function Dashboard() {
-        const trafficData = mockTrafficData;
+    const {
+        trafficData,
+        loading,
+        error,
+    } = useTrafficData();
 
-        /*
-         * Average traffic score across all locations.
-         */
-        const averageTrafficScore =
-                trafficData.length > 0
-                        ? trafficData.reduce(
-                                (sum, point) =>
-                                        sum + point.traffic.traffic_score,
-                                0
-                        ) / trafficData.length
-                        : 0;
+    if (loading) {
+        return <div>Loading traffic data...</div>;
+    }
 
-        /*
-         * Number of locations with HIGH congestion.
-         */
-        const highCongestionCount = trafficData.filter(
-                (point) =>
-                        point.traffic.congestion_level.toUpperCase() ===
-                        "HIGH"
-        ).length;
+    if (error) {
+        return <div>Failed to load traffic data: {error}</div>;
+    }
 
-        return (
-                <div className="dashboard-layout">
-                        <Sidebar />
+    const averageTrafficScore =
+        trafficData.length > 0
+            ? trafficData.reduce(
+                  (sum, point) =>
+                      sum + point.traffic.traffic_score,
+                  0
+              ) / trafficData.length
+            : 0;
 
-                        <div className="dashboard-main">
-                                <Header />
+    const highCongestionCount = trafficData.filter(
+        (point) =>
+            point.traffic.congestion_level.toUpperCase() ===
+            "HIGH"
+    ).length;
 
-                                <main className="dashboard-content">
-                                        <div className="dashboard-heading">
-                                                <h2>
-                                                        Traffic Dashboard
-                                                </h2>
+    return (
+        <div className="dashboard-layout">
+            <Sidebar />
 
-                                                <p>
-                                                        GIS-based real-time
-                                                        traffic monitoring
-                                                </p>
-                                        </div>
+            <div className="dashboard-main">
+                <Header />
 
-                                        <TrafficMap
-                                                trafficData={trafficData}
-                                        />
+                <main className="dashboard-content">
+                    <div className="dashboard-heading">
+                        <h2>
+                            Traffic Dashboard
+                        </h2>
 
-                                        <div className="dashboard-cards">
-                                                <TrafficScoreCard
-                                                        score={averageTrafficScore.toFixed(
-                                                                1
-                                                        )}
-                                                />
+                        <p>
+                            GIS-based real-time
+                            traffic monitoring
+                        </p>
+                    </div>
 
-                                                <CongestionCard
-                                                        count={
-                                                                highCongestionCount
-                                                        }
-                                                />
-                                        </div>
+                    <TrafficMap
+                        trafficData={trafficData}
+                    />
 
-                                        <TrafficScoreChart
-                                                trafficData={trafficData}
-                                        />
+                    <div className="dashboard-cards">
+                        <TrafficScoreCard
+                            score={averageTrafficScore.toFixed(1)}
+                        />
 
-                                        <TrafficAnalytics
-                                                trafficData={trafficData}
-                                        />
-                                </main>
-                        </div>
-                </div>
-        );
+                        <CongestionCard
+                            count={highCongestionCount}
+                        />
+                    </div>
+
+                    <TrafficScoreChart
+                        trafficData={trafficData}
+                    />
+
+                    <TrafficAnalytics
+                        trafficData={trafficData}
+                    />
+                </main>
+            </div>
+        </div>
+    );
 }
 
 export default Dashboard;
